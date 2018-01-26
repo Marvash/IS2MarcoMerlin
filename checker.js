@@ -16,25 +16,37 @@ function check(url, invocationParameters,  expectedResultData, expectedResultSta
 	for(i in paramNames)
 	{
 		completeUrl += (paramNames[i] + "=" + paramValues[i]);
+		if(i != paramNames.length-1)
+			completeUrl += "&";
 	}
 	var response = null;
 	var json = null;
 	const request = async () => {
 		response = await fetch(completeUrl);
 		json = await response.json();
+		checkResult.urlChecked = url;
+		checkResult.resultData = json;
+		checkResult.resultStatus = response.status;
+		if(response.status == expectedResultStatus)
+		{
+			checkResult.statusTestPassed = true;
+		}
+		else
+		{
+			checkResult.statusTestPassed = false;
+		}
+		if(compareResults(expectedResultData, response.json))
+		{
+			checkResult.resultDataAsExpected = true;
+		}
+		else
+		{
+			checkResult.resultDataAsExpected = false;
+		}
+		console.log(checkResult);
+		return checkResult;
 	}
 	request();
-	checkResult.urlChecked = url;
-	checkResult.resultData = json;
-	checkResult.resultStatus = response.status;
-	if(response.status == expectedResultStatus)
-		checkResult.statusTestPassed = true;
-	else
-		checkResult.statusTestPassed = false;
-	if(compareResults(expectedResultData, response.json)
-		checkResult.resultDataAsExpected = true;
-	else
-		checkResult.resultDataAsExpected = false;
 }
 
 
