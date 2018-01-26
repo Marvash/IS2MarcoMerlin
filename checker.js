@@ -10,9 +10,31 @@ function check(url, invocationParameters,  expectedResultData, expectedResultSta
         statusTestPassed: null,
         resultDataAsExpected: null
     }
-
-
-
+	var paramNames = Object.keys(invocationParameters);
+	var paramValues = Object.values(invocationParameters);
+	var completeUrl = url + "?";
+	for(i in paramNames)
+	{
+		completeUrl += (paramNames[i] + "=" + paramValues[i]);
+	}
+	var response = null;
+	var json = null;
+	const request = async () => {
+		response = await fetch(completeUrl);
+		json = await response.json();
+	}
+	request();
+	checkResult.urlChecked = url;
+	checkResult.resultData = json;
+	checkResult.resultStatus = response.status;
+	if(response.status == expectedResultStatus)
+		checkResult.statusTestPassed = true;
+	else
+		checkResult.statusTestPassed = false;
+	if(compareResults(expectedResultData, response.json)
+		checkResult.resultDataAsExpected = true;
+	else
+		checkResult.resultDataAsExpected = false;
 }
 
 
